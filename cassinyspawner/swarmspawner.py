@@ -164,7 +164,7 @@ class SwarmSpawner(Spawner):
             JPY_COOKIE_NAME=self.user.server.cookie_name,
             JPY_BASE_URL=self.user.server.base_url,
             JPY_HUB_PREFIX=self.hub.server.base_url,
-            USER_ID=self.user_id,
+            USER_ID=pwd.getpwnam(self.user.name).pw_uid,
             USER=self.user.name,
             GROUP_ID=pwd.getpwnam(self.user.name).pw_gid,
             GROUP=grp.getgrgid(pwd.getpwnam(self.user.name).pw_gid).gr_name
