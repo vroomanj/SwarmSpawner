@@ -172,7 +172,6 @@ class SwarmSpawner(Spawner):
 
         if self.notebook_dir:
             env['NOTEBOOK_DIR'] = self.notebook_dir.format(username=self.service_owner)
-            env['JUPYTER_SERVER_ROOT'] = env['NOTEBOOK_DIR']
 
         env['JPY_HUB_API_URL'] = self._public_hub_api_url()
 
