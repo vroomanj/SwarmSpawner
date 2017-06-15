@@ -294,7 +294,7 @@ class SwarmSpawner(Spawner):
                 working_dir = self.container_spec['working_dir'].format(username=self.service_owner)
             else:
                 working_dir = self.notebook_dir
-            container_spec['dir'] = working_dir
+            container_spec['workdir'] = working_dir
 
             if hasattr(self, 'resource_spec'):
                 resource_spec = self.resource_spec
