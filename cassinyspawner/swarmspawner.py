@@ -9,6 +9,7 @@ import hashlib
 from textwrap import dedent
 from concurrent.futures import ThreadPoolExecutor
 from pprint import pformat
+import pwd
 import grp
 
 import docker
