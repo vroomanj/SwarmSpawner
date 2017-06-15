@@ -9,6 +9,7 @@ import hashlib
 from textwrap import dedent
 from concurrent.futures import ThreadPoolExecutor
 from pprint import pformat
+import grp
 
 import docker
 from docker.errors import APIError
@@ -82,7 +83,7 @@ class SwarmSpawner(Spawner):
     tls_config = Dict(config=True,
         help="""Arguments to pass to docker TLS configuration.
         Check for more info: http://docker-py.readthedocs.io/en/stable/tls.html
-+        """
+        """
 )
 
     container_spec = Dict({}, config=True, help="Params to create the service")
@@ -108,9 +109,9 @@ class SwarmSpawner(Spawner):
     @property
     def service_owner(self):
         if self._service_owner is None:
-            m = hashlib.md5()
-            m.update(self.user.name.encode('utf-8'))
-            self._service_owner = m.hexdigest()
+            #m = hashlib.md5()
+            #m.update(self.user.name.encode('utf-8'))
+            self._service_owner = self.user.name
         return self._service_owner
 
     @property
@@ -159,6 +160,7 @@ class SwarmSpawner(Spawner):
         env = super().get_env()
         env.update(dict(
             JPY_USER=self.user.name,
+            GROUP=grp.getgrgid(pwd.getpwnam(self.user.name).pw_gid).gr_name,
             JPY_COOKIE_NAME=self.user.server.cookie_name,
             JPY_BASE_URL=self.user.server.base_url,
             JPY_HUB_PREFIX=self.hub.server.base_url
@@ -276,6 +278,8 @@ class SwarmSpawner(Spawner):
                 m = dict(**mount)
                 if 'source' in m:
                     m['source'] = m['source'].format(username=self.service_owner)
+                if 'target' in m:
+                    m['target'] = m['target'].format(username=self.service_owner)
                 container_spec['mounts'].append(docker.types.Mount(**m))
 
             # some Envs are required by the single-user-image
