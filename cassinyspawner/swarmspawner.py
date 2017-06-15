@@ -286,15 +286,15 @@ class SwarmSpawner(Spawner):
                     m['target'] = m['target'].format(username=self.service_owner)
                 container_spec['mounts'].append(docker.types.Mount(**m))
 
+            # some Envs are required by the single-user-image
+            container_spec['env'] = self.get_env()
+
             working_dir = None
             if 'working_dir' in self.container_spec:
                 working_dir = self.container_spec['working_dir'].format(username=self.service_owner)
             else:
                 working_dir = self.notebook_dir
-            container_spec['working_dir'] = working_dir
-
-            # some Envs are required by the single-user-image
-            container_spec['env'] = self.get_env()
+            container_spec['dir'] = working_dir
 
             if hasattr(self, 'resource_spec'):
                 resource_spec = self.resource_spec
