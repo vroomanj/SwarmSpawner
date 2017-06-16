@@ -61,7 +61,7 @@ On the host system (Docker Swarm manager):
 git clone https://github.com/vroomanj/SwarmSpawner.git
 cd SwarmSpawner/
 cp jupyterhub/other-files/jupyterhub_config.py.example jupyterhub/other-files/jupyterhub_config.py
-**MODIFY jupyterhub/other-files/jupyterhub_config.py**
+**MODIFY*** jupyterhub/other-files/jupyterhub_config.py
 docker build jupyterhub/ -t vroomanj/jupyterhub:latest
 ```
 
@@ -77,5 +77,22 @@ firewall-cmd --zone=docker --permanent --add-rich-rule="rule protocol value=esp 
 
 On the host system (Docker Swarm manager):
 ```
-docker service create --constraint 'node.role == manager' --name jupyterhub --network jupyterhub --dns IP1.IP1.IP1.IP1 --dns IP2.IP2.IP2.IP2 --dns-search example.com --publish mode=host,target=8000,published=8000 --env DOCKER_HOST=IP.IP.IP.IP:2375 --mount type=bind,source=/var/lib/sss/pipes,destination=/var/lib/sss/pipes --mount type=bind,source=/srv/jupyterhub,destination=/srv/jupyterhub,readonly=false --mount type=bind,source=/etc/jupyterhub,destination=/etc/jupyterhub,readonly=true vroomanj/jupyterhub:latest
+docker service create --constraint 'node.role == manager' --name jupyterhub --network jupyterhub \
+       --dns IP1.IP1.IP1.IP1 --dns IP2.IP2.IP2.IP2 --dns-search example.com \
+       --publish mode=host,target=8000,published=8000 --env DOCKER_HOST=IP.IP.IP.IP:2375 \
+       --mount type=bind,source=/var/lib/sss/pipes,destination=/var/lib/sss/pipes \
+       --mount type=bind,source=/srv/jupyterhub,destination=/srv/jupyterhub,readonly=false \
+       --mount type=bind,source=/etc/jupyterhub,destination=/etc/jupyterhub,readonly=true \
+       vroomanj/jupyterhub:latest
 ```
+
+References:
+- [Docker - Getting started with swarm mode](https://docs.docker.com/engine/swarm/swarm-tutorial/)
+- [Docker - Manage swarm service networks](https://docs.docker.com/engine/swarm/networking/)
+- [Docker - Deploy services to a swarm](https://docs.docker.com/engine/swarm/services/)
+- [Docker - Docker swarm mode overlay network security model](https://docs.docker.com/engine/userguide/networking/overlay-security-model/)
+- [JupyterHub - Getting started with JupyterHub](http://jupyterhub.readthedocs.io/en/latest/getting-started.html)
+- [GitHub - cassinyio/SwarmSpawner](https://github.com/cassinyio/SwarmSpawner)
+- [GitHub - jupyterhub/dockerspawner/systemuser](https://github.com/jupyterhub/dockerspawner/tree/master/systemuser)
+- [sssd.conf(5) - Linux man page](https://linux.die.net/man/5/sssd.conf)
+- [Authenticating a docker container against host’s UNIX accounts](https://jhrozek.wordpress.com/2015/03/31/authenticating-a-docker-container-against-hosts-unix-accounts/)
