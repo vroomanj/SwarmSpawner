@@ -3,6 +3,25 @@
 **SwarmSpawner** enables [JupyterHub](https://github.com/jupyterhub/jupyterhub) 
 to spawn single user notebook servers in Docker Services.
 
+This is a MODIFIED version of the original [cassinyio/SwarmSpawner](https://github.com/cassinyio/SwarmSpawner).
+
+Modifications include:
+- Removal of the hashing of usernames. Each spawned service will now be named
+  after the user who owns it. This improves compatibility with images used by
+  the DockerSpawner/SystemUserSpawner from [jupyterhub/dockerspawner](https://github.com/jupyterhub/dockerspawner).
+- Added `{username}` support to mount point targets. Previously, only a mount's
+  source could include `{username}`.
+- Added `{username}` support to notebook_dir config parameter.
+- Added workdir (optional) to container_spec config parameter. The workdir also
+  supports the {username} magic. This currently defaults to the notebook_dir if
+  notebook_dir is specified. Previously, a system user container spawned by
+  SwarmSpawner would open to the location specified by `JUPYTER_SERVER_ROOT`.
+  `JUPYTER_SERVER_ROOT` (whether intended or not) gets set to the last `WORKDIR`
+  declared in a Dockerfile. The value of workdir overrides notebook_dir for
+  the directory your notebook opens. I wasn't sure if there were other reasons
+  one might want to set a separate notebook_dir. Perhaps the appropriate
+  behavior is to always set the workdir to the value of notebook_dir.
+
 More info about Docker Services [here](https://docs.docker.com/engine/reference/commandline/service_create/).
 
 ## Prerequisites
@@ -12,7 +31,7 @@ Python version 3.3 and above is required.
 Clone the repo:
 
 ```bash
-git clone https://github.com/cassinyio/SwarmSpawner
+git clone https://github.com/vroomanj/SwarmSpawner
 cd SwarmSpawner
 ```
 
@@ -35,7 +54,7 @@ You can find an example jupyter_config.py inside [examples](/examples)
 
 ### SwarmSpawner
 
-Docker Engine in Swarm mode and the related services work in a different way compared to Docker containers.
+Docker Engine in Swarm Mode and the related services work in a different way compared to Docker containers.
 
 
 Tell JupyterHub to use SwarmSpawner by adding the following lines to 
@@ -51,11 +70,11 @@ c.SwarmSpawner.jupyterhub_service_name = 'NameOfTheService'
 ```
 What is `jupyterhub_service_name`?
 
-Inside a Docker engine in Swarm mode the services use a `name` instead of a `ip` to communicate with each other.
+Inside a Docker engine in Swarm Mode the services use a `name` instead of a `ip` to communicate with each other.
 'jupyterhub_service_name' is the name of ther service for the JupyterHub.
 
 ### Networks
-It's important to put the JupyterHub service (also the proxy) and the services that are running jupyter notebook inside the same network, otherwise they couldn't reach each other.
+It's important to put the JupyterHub service (also the proxy) and the services that are running Jupyter Notebook inside the same network, otherwise they couldn't reach each other.
 SwarmSpawner use the service's name instead of the service's ip, as a consequence JupyterHub and servers should share the same overlay network (network across nodes).
 
 ```python
@@ -181,9 +200,9 @@ user_options = {
       'name' : '' # Name of service
 ```
 
-### Names of the Jupyter notebook service inside Docker engine in Swarm mode
+### Names of the Jupyter Notebook service inside Docker Engine in Swarm Mode
 
-We JupyterHub spawns a new Jupyter notebook server the name of the service will be `{service_prefix}-{service_owner}-{service_suffix}`
+We JupyterHub spawns a new Jupyter Notebook server the name of the service will be `{service_prefix}-{service_owner}-{service_suffix}`
 
 You can change the service_prefix in this way:
 
@@ -192,12 +211,12 @@ Prefix of the service in Docker
 c.SwarmSpawner.service_prefix = "jupyterhub"
 ```
 
-`service_owner` is the hexdigest() of the hashed `user.name`.
+~~`service_owner` is the hexdigest() of the hashed `user.name`.~~
 
 In case of named servers (more than one server for user) `service_suffix` is the name of the server, otherwise is always 1.
 
 ### Downloading images
-Docker Engine in Swarm mode downloads images automatically from the repository.
+Docker Engine in Swarm Mode downloads images automatically from the repository.
 Either the image is available on the remote repository or locally, if not you will get an error. 
 
 Because before starting the service you have to complete the download of the image is better to have a longer timeout (default is 30 secs)
