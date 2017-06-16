@@ -13,7 +13,7 @@ Modifications include:
   source could include `{username}`.
 - Added `{username}` support to notebook_dir config parameter.
 - Added workdir (optional) to container_spec config parameter. The workdir also
-  supports the {username} magic. This currently defaults to the notebook_dir if
+  supports the `{username}` magic. This currently defaults to the notebook_dir if
   notebook_dir is specified. Previously, a system user container spawned by
   SwarmSpawner would open to the location specified by `JUPYTER_SERVER_ROOT`.
   `JUPYTER_SERVER_ROOT` (whether intended or not) gets set to the last `WORKDIR`
