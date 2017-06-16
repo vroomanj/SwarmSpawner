@@ -158,13 +158,16 @@ class SwarmSpawner(Spawner):
         env = super().get_env()
         env.update(dict(
             JPY_USER=self.user.name,
+            JPY_USER_ID=pwd.getpwnam(self.user.name).pw_uid,
+            JPY_GROUP=grp.getgrgid(pwd.getpwnam(self.user.name).pw_gid).gr_name,
+            JPY_GROUP_ID=pwd.getpwnam(self.user.name).pw_gid,
             JPY_COOKIE_NAME=self.user.server.cookie_name,
             JPY_BASE_URL=self.user.server.base_url,
             JPY_HUB_PREFIX=self.hub.server.base_url,
-            USER_ID=pwd.getpwnam(self.user.name).pw_uid,
-            USER=self.user.name,
-            GROUP_ID=pwd.getpwnam(self.user.name).pw_gid,
-            GROUP=grp.getgrgid(pwd.getpwnam(self.user.name).pw_gid).gr_name
+#            USER=self.user.name,
+#            USER_ID=pwd.getpwnam(self.user.name).pw_uid,
+#            GROUP=grp.getgrgid(pwd.getpwnam(self.user.name).pw_gid).gr_name,
+#            GROUP_ID=pwd.getpwnam(self.user.name).pw_gid
         ))
 
         if self.notebook_dir:
