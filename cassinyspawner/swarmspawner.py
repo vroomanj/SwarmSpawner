@@ -5,7 +5,6 @@ server in a separate Docker Service
 
 import os
 import string
-import hashlib
 from textwrap import dedent
 from concurrent.futures import ThreadPoolExecutor
 from pprint import pformat
@@ -76,7 +75,7 @@ class SwarmSpawner(Spawner):
         help=dedent(
             """
             Prefix for service names. The full service name for a particular
-            user will be <prefix>-<hash(username)>-<server_name>.
+            user will be <prefix>-<username>-<server_name>.
             """
         )
     )
@@ -110,8 +109,6 @@ class SwarmSpawner(Spawner):
     @property
     def service_owner(self):
         if self._service_owner is None:
-            #m = hashlib.md5()
-            #m.update(self.user.name.encode('utf-8'))
             self._service_owner = self.user.name
         return self._service_owner
 
@@ -286,12 +283,13 @@ class SwarmSpawner(Spawner):
                     m['target'] = m['target'].format(username=self.service_owner)
                 container_spec['mounts'].append(docker.types.Mount(**m))
 
-            working_dir = None
-            if 'working_dir' in self.container_spec:
-                working_dir = self.container_spec['working_dir'].format(username=self.service_owner)
-            else:
-                working_dir = self.notebook_dir.format(username=self.service_owner)
-            container_spec['workdir'] = working_dir
+            workdir = None
+            if 'workdir' in self.container_spec:
+                workdir = self.container_spec['workdir'].format(username=self.service_owner)
+            elif self.notebook_dir != None:
+                workdir = self.notebook_dir.format(username=self.service_owner)
+            if workdir != None:
+                container_spec['workdir'] = working_dir
 
             # some Envs are required by the single-user-image
             container_spec['env'] = self.get_env()

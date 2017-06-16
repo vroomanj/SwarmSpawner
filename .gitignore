@@ -60,3 +60,9 @@ ssl.key
 env
 jupyterhub.sqlite
 src
+
+# Temporary ignores
+notebook/
+systemuser/
+jupyterhub/
+README.md.updated
