@@ -35,7 +35,7 @@ enumerate = {true|false}
 id_provider = ldap
 chpass_provider = krb5
 ldap_uri = ldap://ldap_uri.example.com/
-ldap_user_search_base = dc={},dc={},dc={}
+ldap_user_search_base = dc=example,dc=com
 ldap_krb5_keytab = {/path/filename.keytab}
 tls_reqcert = {never|allow|try|demand}
 
