@@ -289,7 +289,7 @@ class SwarmSpawner(Spawner):
             elif self.notebook_dir != None:
                 workdir = self.notebook_dir.format(username=self.service_owner)
             if workdir != None:
-                container_spec['workdir'] = working_dir
+                container_spec['workdir'] = workdir
 
             # some Envs are required by the single-user-image
             container_spec['env'] = self.get_env()
