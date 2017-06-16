@@ -70,7 +70,7 @@ RUN conda install -c conda-forge sqlalchemy tornado jinja2 traitlets requests pi
 VOLUME /etc/jupyterhub
 #ADD other-files/jupyterhub_config.py /etc/jupyterhub
 #RUN chown -R jupyter:jupyter /etc/jupyterhub && \
-#    chmod 0640 /etc/jupyterhub/* && \
+#    chmod 0640 /etc/jupyterhub/*
 
 VOLUME /srv/jupyterhub
 #RUN mkdir -p /srv/jupyterhub/ssl
