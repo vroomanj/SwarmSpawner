@@ -21,6 +21,9 @@ Modifications include:
   the directory your notebook opens. I wasn't sure if there were other reasons
   one might want to set a separate notebook_dir. Perhaps the appropriate
   behavior is to always set the workdir to the value of notebook_dir.
+- Added `USER_ID`, `USER`, `GROUP_ID` and `GROUP` to getenv for compatibility
+  with my setup. May be more appropriate to add `JPY_USER_ID`, `JPY_GROUP_ID`,
+  `JPY_GROUP` and other values (see: [set_user_setuid](https://github.com/jupyterhub/jupyterhub/blob/master/jupyterhub/spawner.py)).
 
 More info about Docker Services [here](https://docs.docker.com/engine/reference/commandline/service_create/).
 
