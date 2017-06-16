@@ -1,0 +1,87 @@
+# Configuration file for JupyterHub
+import os
+import sys
+import subprocess
+import errno
+import stat
+
+pjoin = os.path.join
+
+runtime_dir = pjoin('/srv/jupyterhub')
+ssl_dir = pjoin(runtime_dir, '.ssl')
+if not os.path.exists(ssl_dir):
+    os.makedirs(ssl_dir)
+
+c = get_config()
+
+#c.JupyterHub.ip = '0.0.0.0'
+c.JupyterHub.hub_ip = '0.0.0.0'
+c.JupyterHub.proxy_api_ip = '0.0.0.0'
+c.JupyterHub.ssl_cert = pjoin(ssl_dir, 'cert.pem')
+c.JupyterHub.ssl_key = pjoin(ssl_dir, 'key.pem')
+c.JupyterHub.logo_file = pjoin(runtime_dir, 'logo.png')
+c.JupyterHub.cookie_secret = bytes.fromhex('64 CHAR HEX STRING')
+#c.JupyterHub.cookie_secret_file = pjoin(runtime_dir, 'jupyterhub_cookie_secret')
+#c.JupyterHub.proxy_auth_token = '0bc02bede919e99a26de1e2a7a5aadfaf6228de836ec39a05a6c6942831d8fe5'
+c.JupyterHub.db_url = pjoin(runtime_dir, 'jupyterhub.sqlite')
+c.JupyterHub.extra_log_file = '/log/jupyterhub/jupyterhub.log'
+c.JupyterHub.spawner_class = 'cassinyspawner.SwarmSpawner'
+
+c.PAMAuthenticator.open_sessions = False
+c.Authenticator.admin_users = {'admin1', 'admin2', 'admin3'}
+
+c.JupyterHub.services = [
+    # https://github.com/jupyterhub/jupyterhub/tree/master/examples/cull-idle
+    {
+        'name': 'cull-idle',
+        'admin': True,
+        'command': 'python3 /srv/jupyterhub/cull-idle-servers.py --timeout=259200'.split()
+    },
+    # https://github.com/minrk/log_jupyterhub_activity
+    {
+        'name': 'log-activity',
+        'admin': True,
+        'command': 'python3 /srv/jupyterhub/log-activity.py --file jupyterhub_activity.sqlite  --interval 600 --hub http://127.0.0.1:8081'.split()
+    },
+ ]
+c.JupyterHub.last_activity_interval = 150
+c.JupyterHub.cleanup_servers = True
+
+c.SwarmSpawner.start_timeout = 60 * 5
+
+c.SwarmSpawner.jupyterhub_service_name = 'jupyterhub'
+c.SwarmSpawner.networks = ['jupyterhub']
+
+c.SwarmSpawner.use_user_options = False
+
+c.SwarmSpawner.notebook_dir = '/home/{username}'
+
+mounts = [
+     {
+        'type' : 'bind',
+        'source' : '/home/{username}',
+        'target' : '/home/{username}'
+     },
+#     {
+#        'type' : 'bind',
+#        'source' : '/opt/soft/MATLAB/R2016b',
+#        'target' : '/matlab'
+#     },
+ ]
+c.SwarmSpawner.container_spec = {
+    # The command to run inside the service
+    'args' : ['sh', '/srv/singleuser/systemuser.sh'],
+    'Image' : 'vroomanj/systemuser:latest',
+    'mounts' : mounts,
+ }
+
+c.SwarmSpawner.resource_spec = {
+        # (int) – CPU limit in units of 10^9 CPU shares.
+        'cpu_limit' : 1000,
+        # (int) – Memory limit in Bytes.
+        'mem_limit' : int(512 * 1e6),
+        # (int) – CPU reservation in units of 10^9 CPU shares.
+        'cpu_reservation' : 1000,
+        # (int) – Memory reservation in Bytes.
+        'mem_reservation' : int(512 * 1e6),
+ }

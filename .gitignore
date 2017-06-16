@@ -64,5 +64,4 @@ src
 # Temporary ignores
 notebook/
 systemuser/
-jupyterhub/
 README.md.updated
