@@ -1,6 +1,6 @@
 # README.md
 
-** This container image CANNOT be built without first creating a `jupyterhub_config.py` in the `other-files/` directory. Make a copy of `jupyterhub_config.py.example` and modify as necessary. **
+**This container image CANNOT be built without first creating a `jupyterhub_config.py` in the `other-files/` directory. Make a copy of `jupyterhub_config.py.example` and modify as necessary.**
 
 This Dockerfile and included example files builds a CentOS-based JupyterHub Docker container image using my modified version of cassinyio/SwarmSpawner as the spawner. This example proxies SSSD requests to the host system (Docker Swarm manager) for user look up and authentication (example: LDAP/Kerberos) and thus is intended to spawn system user images. It can be configured to either contain all of the necessary runtime files or rely on bind mounts (see the commented sections in the Dockerfile). As is, it expects the JupyterHub config to be bind mounted into `/etc/jupyterhub` (ro) and the server runtime directory to be bind mounted into `/srv/jupyterhub` (rw). If you have a need to preserve JupyterHub logs long-term you will want to modify the Dockerfile and bind mount the desired log directory into `/log/jupyterhub` (rw).
 
