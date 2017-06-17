@@ -67,14 +67,14 @@ cp jupyterhub/other-files/jupyterhub_config.py.example jupyterhub/other-files/ju
 docker build jupyterhub/ -t vroomanj/jupyterhub:latest
 ```
 
-On the host system (Docker Swarm manager):
-```
-docker network create --opt encrypted --driver overlay jupyterhub
-```
-
 On all Docker Swarm nodes including the manager (if using Firewalld):
 ```
 firewall-cmd --zone=docker --permanent --add-rich-rule="rule protocol value=esp accept"
+```
+
+On the host system (Docker Swarm manager):
+```
+docker network create --opt encrypted --driver overlay jupyterhub
 ```
 
 On the host system (Docker Swarm manager):
