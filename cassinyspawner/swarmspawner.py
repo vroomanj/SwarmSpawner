@@ -61,7 +61,7 @@ class SwarmSpawner(Spawner):
             if self.tls_config:
                 kwargs['tls'] = docker.tls.TLSConfig(**self.tls_config)
             kwargs.update(kwargs_from_env())
-            client = docker.APIClient(version='auto', **kwargs)
+            client = docker.APIClient(version='None', **kwargs)
 
             cls._client = client
         return cls._client
