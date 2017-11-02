@@ -158,7 +158,8 @@ class SwarmSpawner(Spawner):
         env = super().get_env()
         env.update(dict(
             JPY_USER=self.user.name,
-            JPY_USER_ID=self.uid,
+#            JPY_USER_ID=self.uid,
+            JPY_USER_ID=pwd.getpwnam(self.user.name).pw_uid,
             JPY_GROUP=self.gid.gr_name,
             JPY_GROUP_ID=self.gid,
             JPY_COOKIE_NAME=self.user.server.cookie_name,
